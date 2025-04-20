@@ -1,11 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import App from '../App.vue' // tek sayfa için bile bu kalabilir
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: HomeView
+    component: App
+  },
+  {
+    path: '/cart',
+    name: 'Cart',
+    component: App // örnek olarak tekrar App.vue; farklı bir component varsa onu yaz
   }
 ]
 
