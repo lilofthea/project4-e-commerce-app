@@ -120,26 +120,18 @@ export default {
     return {
       visibleCart: false,
       cart: [],
-      products: [
-        {
-          name: 'Bamboo Watch',
-          category: 'Accessories',
-          image: 'bamboo-watch.jpg',
-          price: 65,
-          inventoryStatus: 'INSTOCK',
-          rating: 5
-        },
-        {
-          name: 'Black Watch',
-          category: 'Accessories',
-          image: 'black-watch.jpg',
-          price: 72,
-          inventoryStatus: 'OUTOFSTOCK',
-          rating: 4
-        }
-      ]
+      products: []
     }
   },
+  mounted() {
+  fetch('http://localhost:3000/api/products')
+    .then(res => res.json())
+    .then(data => {
+      this.products = data
+    })
+    .catch(err => console.error('Ürünleri çekerken hata:', err))
+},
+
   methods: {
     addToCart(product) {
       this.cart.push(product)

@@ -7,32 +7,30 @@ app.use(express.json());
 
 
 const products = [
-  { id: 1, name: 'Laptop', price: 15000 },
-  { id: 2, name: 'Telefon', price: 8000 },
-  { id: 3, name: 'Kulaklık', price: 1200 }
-];
+  {
+    id: 1,
+    name: 'Bamboo Watch',
+    category: 'Accessories',
+    image: 'bamboo-watch.jpg',
+    price: 65,
+    inventoryStatus: 'INSTOCK',
+    rating: 5
+  },
+  {
+    id: 2,
+    name: 'Black Watch',
+    category: 'Accessories',
+    image: 'black-watch.jpg',
+    price: 72,
+    inventoryStatus: 'OUTOFSTOCK',
+    rating: 4
+  }
+]
 
 app.get('/api/products', (req, res) => {
   res.json(products);
 });
 
-app.post('/api/products', (req, res) => {
-    const { name, price } = req.body;
-  
-    if (!name || !price) {
-      return res.status(400).json({ error: 'Name ve price zorunlu.' });
-    }
-  
-    const newProduct = {
-      id: products.length + 1,
-      name,
-      price
-    };
-  
-    products.push(newProduct);
-  
-    res.status(201).json(newProduct);
-  });
 
 app.listen(3000, () => {
   console.log('Backend http://localhost:3000 adresinde çalışıyor');
