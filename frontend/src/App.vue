@@ -8,10 +8,20 @@
           :to="item.route"
           custom
         >
-          <a v-ripple :href="href" v-bind="props.action" @click="navigate" :class="item.class">
+          <a
+            v-ripple
+            :href="href"
+            v-bind="props.action"
+            @click="navigate"
+            :class="item.class"
+          >
             <span :class="item.icon" />
             <span class="ml-2">{{ item.label }}</span>
-            <Badge v-if="item.label === 'Sepetim' && cart.length" :value="cart.length" class="ml-2" />
+            <Badge
+              v-if="item.label === 'Sepetim' && cart.length"
+              :value="cart.length"
+              class="ml-2"
+            />
           </a>
         </router-link>
 
@@ -26,7 +36,11 @@
         >
           <span :class="item.icon" />
           <span class="ml-2">{{ item.label }}</span>
-          <Badge v-if="item.label === 'Sepetim' && cart.length" :value="cart.length" class="ml-2" />
+          <Badge
+            v-if="item.label === 'Sepetim' && cart.length"
+            :value="cart.length"
+            class="ml-2"
+          />
         </a>
       </template>
     </Menubar>
@@ -36,7 +50,11 @@
         <DataView :value="products" layout="list">
           <template #list="slotProps">
             <div class="grid grid-nogutter">
-              <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
+              <div
+                v-for="(item, index) in slotProps.items"
+                :key="index"
+                class="col-12"
+              >
                 <div
                   class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3"
                   :class="{ 'border-top-1 surface-border': index !== 0 }"
@@ -47,26 +65,47 @@
                       :src="`https://primefaces.org/cdn/primevue/images/product/${item.image}`"
                       :alt="item.name"
                     />
-                    <Tag :value="item.inventoryStatus" :severity="getSeverity(item)" class="absolute" style="left: 4px; top: 4px" />
+                    <Tag
+                      :value="item.inventoryStatus"
+                      :severity="getSeverity(item)"
+                      class="absolute"
+                      style="left: 4px; top: 4px"
+                    />
                   </div>
-                  <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
-                    <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
+                  <div
+                    class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4"
+                  >
+                    <div
+                      class="flex flex-row md:flex-column justify-content-between align-items-start gap-2"
+                    >
                       <div>
-                        <span class="font-medium text-secondary text-sm">{{ item.category }}</span>
-                        <div class="text-lg font-medium text-900 mt-2">{{ item.name }}</div>
+                        <span class="font-medium text-secondary text-sm">{{
+                          item.category
+                        }}</span>
+                        <div class="text-lg font-medium text-900 mt-2">
+                          {{ item.name }}
+                        </div>
                       </div>
                       <div class="surface-100 p-1" style="border-radius: 30px">
                         <div
                           class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2"
-                          style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)"
+                          style="
+                            border-radius: 30px;
+                            box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04),
+                              0px 1px 2px 0px rgba(0, 0, 0, 0.06);
+                          "
                         >
-                          <span class="text-900 font-medium text-sm">{{ item.rating }}</span>
+                          <span class="text-900 font-medium text-sm">{{
+                            item.rating
+                          }}</span>
                           <i class="pi pi-star-fill text-yellow-500"></i>
                         </div>
                       </div>
                     </div>
                     <div class="flex flex-column md:align-items-end gap-5">
-                      <span class="text-xl font-semibold text-900">${{ item.price }}</span>
+                      <span class="text-xl font-semibold text-900"
+                        >${{ item.price }}</span
+                      >
                       <div class="flex flex-row-reverse md:flex-row gap-2">
                         <Button icon="pi pi-heart" outlined />
                         <Button
@@ -87,7 +126,12 @@
       </div>
     </div>
 
-    <Dialog v-model:visible="visibleCart" modal header="Sepetim" :style="{ width: '50vw' }">
+    <Dialog
+      v-model:visible="visibleCart"
+      modal
+      header="Sepetim"
+      :style="{ width: '50vw' }"
+    >
       <div v-if="cart.length === 0">Sepetiniz boş.</div>
       <ul v-else>
         <li v-for="(item, index) in cart" :key="index">
@@ -99,76 +143,76 @@
 </template>
 
 <script>
-import DataView from 'primevue/dataview'
-import Tag from 'primevue/tag'
-import Button from 'primevue/button'
-import Menubar from 'primevue/menubar'
-import Dialog from 'primevue/dialog'
-import Badge from 'primevue/badge'
+import DataView from "primevue/dataview";
+import Tag from "primevue/tag";
+import Button from "primevue/button";
+import Menubar from "primevue/menubar";
+import Dialog from "primevue/dialog";
+import Badge from "primevue/badge";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Menubar,
     DataView,
     Tag,
     Button,
     Dialog,
-    Badge
+    Badge,
   },
   data() {
     return {
       visibleCart: false,
       cart: [],
-      products: []
-    }
+      products: [],
+    };
   },
   mounted() {
-  fetch('http://localhost:3000/api/products')
-    .then(res => res.json())
-    .then(data => {
-      this.products = data
-    })
-    .catch(err => console.error('Ürünleri çekerken hata:', err))
-},
+    fetch("http://localhost:3000/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        this.products = data;
+      })
+      .catch((err) => console.error("Ürünleri çekerken hata:", err));
+  },
 
   methods: {
     addToCart(product) {
-      this.cart.push(product)
+      this.cart.push(product);
     },
     getSeverity(product) {
       switch (product.inventoryStatus) {
-        case 'INSTOCK':
-          return 'success'
-        case 'LOWSTOCK':
-          return 'warning'
-        case 'OUTOFSTOCK':
-          return 'danger'
+        case "INSTOCK":
+          return "success";
+        case "LOWSTOCK":
+          return "warning";
+        case "OUTOFSTOCK":
+          return "danger";
         default:
-          return null
+          return null;
       }
-    }
+    },
   },
   computed: {
     items() {
       return [
         {
-          label: 'Anasayfa',
-          icon: 'pi pi-home',
-          route: '/'
+          label: "Anasayfa",
+          icon: "pi pi-home",
+          route: "/",
         },
         {
-          label: 'Sepetim',
-          icon: 'pi pi-shopping-cart',
-          class: 'ml-auto',
+          label: "Sepetim",
+          icon: "pi pi-shopping-cart",
+          class: "ml-auto",
           command: () => {
-            this.visibleCart = true
-          }
-        }
-      ]
-    }
-  }
-}
+            this.visibleCart = true;
+          },
+        },
+      ];
+    },
+  },
+};
 </script>
 
 <style scoped>
