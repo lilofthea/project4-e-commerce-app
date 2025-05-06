@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../database");
+const pool = require("../db");
 
-router.get("/", (req, res) => {
-  db.all("SELECT * FROM products", [], (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json(rows);
-  });
+router.get("/", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM products");
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: "Veritabanı hatası", details: err.message });
+  }
 });
 
 module.exports = router;

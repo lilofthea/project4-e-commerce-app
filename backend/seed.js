@@ -1,5 +1,17 @@
-const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database("ecommerce.db");
+// seed-postgres.js
+const { Client } = require("pg");
+require("dotenv").config();
+
+const client = new Client({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
 
 const products = [
   {
@@ -28,35 +40,36 @@ const products = [
   },
 ];
 
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS products (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    category TEXT,
-    image TEXT,
-    price REAL,
-    inventoryStatus TEXT,
-    rating INTEGER
-  )`);
+async function seed() {
+  try {
+    await client.connect();
 
-  const stmt = db.prepare(
-    `INSERT INTO products (name, category, image, price, inventoryStatus, rating) VALUES (?, ?, ?, ?, ?, ?)`
-  );
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS products (
+        id SERIAL PRIMARY KEY,
+        name TEXT,
+        category TEXT,
+        image TEXT,
+        price REAL,
+        inventoryStatus TEXT,
+        rating INTEGER
+      )
+    `);
 
-  products.forEach((product) => {
-    stmt.run(
-      product.name,
-      product.category,
-      product.image,
-      product.price,
-      product.inventoryStatus,
-      product.rating
-    );
-  });
+    for (const p of products) {
+      await client.query(
+        `INSERT INTO products (name, category, image, price, inventoryStatus, rating)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [p.name, p.category, p.image, p.price, p.inventoryStatus, p.rating]
+      );
+    }
 
-  stmt.finalize();
-});
+    console.log("Veriler başarıyla yüklendi.");
+  } catch (err) {
+    console.error("Hata:", err);
+  } finally {
+    await client.end();
+  }
+}
 
-db.close(() => {
-  console.log("Veritabanına örnek veriler başarıyla eklendi!");
-});
+seed();
